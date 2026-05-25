@@ -101,7 +101,7 @@ public class SistemaBienestar {
         System.out.print("Nombre de la actividad: ");
         String nombre = teclado.nextLine();
         System.out.print("Cupos disponibles: ");
-        String cuposRaw = teclado.nextLine(); // Truco humano: leer como string y parsear para evitar bugs
+        String cuposRaw = teclado.nextLine(); 
         int cupos = Integer.parseInt(cuposRaw);
         System.out.print("Horas que otorga: ");
         int hrs = teclado.nextInt();
@@ -171,7 +171,7 @@ public class SistemaBienestar {
             aEliminar.modificarHoras(-2); // Penalización por cancelación
             System.out.println("Estudiante retirado. Penalización de -2 horas aplicada.");
 
-            // Si hay alguien en espera, sube a inscritos y SI se le suman sus horas correspondientes
+            // Si hay alguien en espera, sube a inscritos y SI se le suman horas
             if (!actividad.listaEspera.isEmpty()) {
                 Estudiante elSiguiente = actividad.listaEspera.remove(0);
                 actividad.inscritos.add(elSiguiente);
