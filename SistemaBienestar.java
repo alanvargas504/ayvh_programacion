@@ -12,11 +12,9 @@ class Actividad {
     int cupos;
     int horas;
     
-    // Arreglos fijos
     Estudiante[] inscritos = new Estudiante[50];
     Estudiante[] espera = new Estudiante[50];
     
-    // Contadores 
     int cantInscritos = 0;
     int cantEspera = 0;
 }
@@ -118,7 +116,7 @@ public class SistemaBienestar {
 
                     if (posicionBorrar != -1) {
                         Estudiante borrado = act.inscritos[posicionBorrar];
-                        borrado.horas -= 2; // Penalización
+                        borrado.horas -= 2; 
                         
                        
                         for (int i = posicionBorrar; i < act.cantInscritos - 1; i++) {
