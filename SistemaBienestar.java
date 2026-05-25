@@ -55,7 +55,6 @@ public class SistemaBienestar {
         int op = 0;
         
         do {
-            System.out.println("\n--- BIENESTAR UNIVERSITARIO ---");
             System.out.println("1. Registrar Estudiante");
             System.out.println("2. Crear Actividad");
             System.out.println("3. Inscribir Alumno");
