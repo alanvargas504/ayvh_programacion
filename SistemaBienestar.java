@@ -25,7 +25,7 @@ public class SistemaBienestar {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         
-        // El sistema soporta hasta 100 alumnos y 20 actividades en total
+        
         Estudiante[] alumnos = new Estudiante[100];
         int totalAlumnos = 0; 
         
@@ -46,8 +46,8 @@ public class SistemaBienestar {
                 System.out.print("Primer nombre: "); e.nombre = sc.next();
                 e.horas = 0;
                 
-                alumnos[totalAlumnos] = e; // Guardar en el casillero actual
-                totalAlumnos++; // Mover el contador al siguiente casillero vacío
+                alumnos[totalAlumnos] = e; 
+                totalAlumnos++; 
                 System.out.println("Alumno guardado.");
             } 
             else if (op == 2) {
@@ -65,7 +65,7 @@ public class SistemaBienestar {
                 System.out.print("ID Alumno: "); int idA = sc.nextInt();
                 System.out.print("Cod Actividad: "); int codA = sc.nextInt();
                 
-                // Buscar estudiante a mano
+                
                 Estudiante est = null;
                 for (int i = 0; i < totalAlumnos; i++) {
                     if (alumnos[i].id == idA) {
@@ -73,7 +73,7 @@ public class SistemaBienestar {
                     }
                 }
                 
-                // Buscar actividad a mano
+                
                 Actividad act = null;
                 for (int i = 0; i < totalActividades; i++) {
                     if (actividades[i].codigo == codA) {
@@ -82,7 +82,7 @@ public class SistemaBienestar {
                 }
 
                 if (est != null && act != null) {
-                    // Validar usando el contador manual de inscritos
+                    
                     if (act.cantInscritos < act.cupos) {
                         act.inscritos[act.cantInscritos] = est;
                         act.cantInscritos++;
@@ -108,7 +108,7 @@ public class SistemaBienestar {
 
                 if (act != null) {
                     int posicionBorrar = -1;
-                    // Buscar en qué casillero está el alumno
+                   
                     for (int i = 0; i < act.cantInscritos; i++) {
                         if (act.inscritos[i].id == idA) {
                             posicionBorrar = i;
