@@ -120,22 +120,22 @@ public class SistemaBienestar {
                         Estudiante borrado = act.inscritos[posicionBorrar];
                         borrado.horas -= 2; // Penalización
                         
-                        // Mover todos los de adelante un casillero hacia atrás para cerrar el hueco
+                       
                         for (int i = posicionBorrar; i < act.cantInscritos - 1; i++) {
                             act.inscritos[i] = act.inscritos[i + 1];
                         }
-                        act.cantInscritos--; // Ahora hay un inscrito menos
+                        act.cantInscritos--; 
                         System.out.println("Dado de baja. Se restaron 2 horas.");
 
-                        // Si hay alguien en espera, sube
+                      
                         if (act.cantEspera > 0) {
-                            Estudiante siguiente = act.espera[0]; // El primero de la fila
+                            Estudiante siguiente = act.espera[0]; 
                             
-                            act.inscritos[act.cantInscritos] = siguiente; // Entra a inscritos
+                            act.inscritos[act.cantInscritos] = siguiente; 
                             act.cantInscritos++;
-                            siguiente.horas += act.horas; // Sumar horas por entrar
+                            siguiente.horas += act.horas; 
                             
-                            // Mover la lista de espera hacia adelante
+                            
                             for (int i = 0; i < act.cantEspera - 1; i++) {
                                 act.espera[i] = act.espera[i + 1];
                             }
