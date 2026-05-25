@@ -27,7 +27,7 @@ class Actividad {
     private int cupos;
     private int horas;
     
-    // Dejamos las listas públicas o accesibles para simplificar el manejo en el main
+    // listas públicas 
     public ArrayList<Estudiante> inscritos = new ArrayList<>();
     public ArrayList<Estudiante> listaEspera = new ArrayList<>();
 
@@ -46,7 +46,7 @@ class Actividad {
 
 public class SistemaBienestar {
     
-    // Scanner global para evitar conflictos de buffer en métodos estáticos
+    // Scanner global
     private static Scanner teclado = new Scanner(System.in);
     private static ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
     private static ArrayList<Actividad> listaActividades = new ArrayList<>();
