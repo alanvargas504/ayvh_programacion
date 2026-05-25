@@ -1,199 +1,163 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 class Estudiante {
-    private int id;
-    private String nombre;
-    private int horas;
-
-    public Estudiante(int id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
-        this.horas = 0;
-    }
-
-    public int getId() { return id; }
-    public String getNombre() { return nombre; }
-    public int getHoras() { return horas; }
-
-    public void modificarHoras(int cantidad) {
-        this.horas += cantidad;
-    }
+    int id;
+    String nombre;
+    int horas;
 }
 
 class Actividad {
-    private int codigo;
-    private String nombre;
-    private int cupos;
-    private int horas;
+    int codigo;
+    String nombre;
+    int cupos;
+    int horas;
     
-    // listas públicas 
-    public ArrayList<Estudiante> inscritos = new ArrayList<>();
-    public ArrayList<Estudiante> listaEspera = new ArrayList<>();
-
-    public Actividad(int codigo, String nombre, int cupos, int horas) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.cupos = cupos;
-        this.horas = horas;
-    }
-
-    public int getCodigo() { return codigo; }
-    public String getNombre() { return nombre; }
-    public int getCupos() { return cupos; }
-    public int getHoras() { return horas; }
+    // Arreglos fijos en vez de listas dinámicas
+    Estudiante[] inscritos = new Estudiante[50];
+    Estudiante[] espera = new Estudiante[50];
+    
+    // Contadores manuales para saber cuántos alumnos hay en cada arreglo
+    int cantInscritos = 0;
+    int cantEspera = 0;
 }
 
 public class SistemaBienestar {
-    
-    // Scanner global
-    private static Scanner teclado = new Scanner(System.in);
-    private static ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
-    private static ArrayList<Actividad> listaActividades = new ArrayList<>();
-
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        // El sistema soporta hasta 100 alumnos y 20 actividades en total
+        Estudiante[] alumnos = new Estudiante[100];
+        int totalAlumnos = 0; 
+        
+        Actividad[] actividades = new Actividad[20];
+        int totalActividades = 0;
+
         int op = 0;
-        
-        do {
-            System.out.println("1. Registrar Estudiante");
-            System.out.println("2. Crear Actividad");
-            System.out.println("3. Inscribir Alumno");
-            System.out.println("4. Cancelar Cupo (Baja)");
-            System.out.println("5. Reporte de Estado");
-            System.out.println("6. Salir");
-            System.out.print("Seleccione una opción: ");
-            
-            if (!teclado.hasNextInt()) {
-                System.out.println("Por favor, ingrese un número válido.");
-                teclado.nextLine();
-                continue;
+
+        while (op != 6) {
+            System.out.println("\n--- BIENESTAR ---");
+            System.out.println("1. Reg Alumno\n2. Reg Actividad\n3. Inscribir\n4. Dar de Baja\n5. Reporte\n6. Salir");
+            System.out.print("Opción: ");
+            op = sc.nextInt();
+
+            if (op == 1) {
+                Estudiante e = new Estudiante();
+                System.out.print("ID del alumno: "); e.id = sc.nextInt();
+                System.out.print("Primer nombre: "); e.nombre = sc.next();
+                e.horas = 0;
+                
+                alumnos[totalAlumnos] = e; // Guardar en el casillero actual
+                totalAlumnos++; // Mover el contador al siguiente casillero vacío
+                System.out.println("Alumno guardado.");
+            } 
+            else if (op == 2) {
+                Actividad a = new Actividad();
+                System.out.print("Código: "); a.codigo = sc.nextInt();
+                System.out.print("Nombre act: "); a.nombre = sc.next();
+                System.out.print("Cupos: "); a.cupos = sc.nextInt();
+                System.out.print("Horas: "); a.horas = sc.nextInt();
+                
+                actividades[totalActividades] = a;
+                totalActividades++;
+                System.out.println("Actividad guardada.");
+            } 
+            else if (op == 3) {
+                System.out.print("ID Alumno: "); int idA = sc.nextInt();
+                System.out.print("Cod Actividad: "); int codA = sc.nextInt();
+                
+                // Buscar estudiante a mano
+                Estudiante est = null;
+                for (int i = 0; i < totalAlumnos; i++) {
+                    if (alumnos[i].id == idA) {
+                        est = alumnos[i];
+                    }
+                }
+                
+                // Buscar actividad a mano
+                Actividad act = null;
+                for (int i = 0; i < totalActividades; i++) {
+                    if (actividades[i].codigo == codA) {
+                        act = actividades[i];
+                    }
+                }
+
+                if (est != null && act != null) {
+                    // Validar usando el contador manual de inscritos
+                    if (act.cantInscritos < act.cupos) {
+                        act.inscritos[act.cantInscritos] = est;
+                        act.cantInscritos++;
+                        est.horas += act.horas;
+                        System.out.println("Inscrito con éxito.");
+                    } else {
+                        act.espera[act.cantEspera] = est;
+                        act.cantEspera++;
+                        System.out.println("Lleno. Enviado a lista de espera.");
+                    }
+                } else {
+                    System.out.println("No se encontraron los datos.");
+                }
+            } 
+            else if (op == 4) {
+                System.out.print("Cod Actividad: "); int codA = sc.nextInt();
+                System.out.print("ID Alumno: "); int idA = sc.nextInt();
+                
+                Actividad act = null;
+                for (int i = 0; i < totalActividades; i++) {
+                    if (actividades[i].codigo == codA) act = actividades[i];
+                }
+
+                if (act != null) {
+                    int posicionBorrar = -1;
+                    // Buscar en qué casillero está el alumno
+                    for (int i = 0; i < act.cantInscritos; i++) {
+                        if (act.inscritos[i].id == idA) {
+                            posicionBorrar = i;
+                            break;
+                        }
+                    }
+
+                    if (posicionBorrar != -1) {
+                        Estudiante borrado = act.inscritos[posicionBorrar];
+                        borrado.horas -= 2; // Penalización
+                        
+                        // Mover todos los de adelante un casillero hacia atrás para cerrar el hueco
+                        for (int i = posicionBorrar; i < act.cantInscritos - 1; i++) {
+                            act.inscritos[i] = act.inscritos[i + 1];
+                        }
+                        act.cantInscritos--; // Ahora hay un inscrito menos
+                        System.out.println("Dado de baja. Se restaron 2 horas.");
+
+                        // Si hay alguien en espera, sube
+                        if (act.cantEspera > 0) {
+                            Estudiante siguiente = act.espera[0]; // El primero de la fila
+                            
+                            act.inscritos[act.cantInscritos] = siguiente; // Entra a inscritos
+                            act.cantInscritos++;
+                            siguiente.horas += act.horas; // Sumar horas por entrar
+                            
+                            // Mover la lista de espera hacia adelante
+                            for (int i = 0; i < act.cantEspera - 1; i++) {
+                                act.espera[i] = act.espera[i + 1];
+                            }
+                            act.cantEspera--;
+                            System.out.println(siguiente.nombre + " subió de la lista de espera.");
+                        }
+                    } else {
+                        System.out.println("El alumno no está inscrito en esta actividad.");
+                    }
+                }
+            } 
+            else if (op == 5) {
+                System.out.println("\n--- REPORTES ---");
+                for (int i = 0; i < totalAlumnos; i++) {
+                    String estado = "NO APTO";
+                    if (alumnos[i].horas >= 30) {
+                        estado = "APTO";
+                    }
+                    System.out.println(alumnos[i].nombre + " - Horas: " + alumnos[i].horas + " [" + estado + "]");
+                }
             }
-            op = teclado.nextInt();
-            teclado.nextLine(); // Limpieza limpia del buffer siempre
-
-            switch(op) {
-                case 1: registrarEstudiante(); break;
-                case 2: crearActividad(); break;
-                case 3: ejecutarInscripcion(); break;
-                case 4: darDeBaja(); break;
-                case 5: mostrarReportes(); break;
-                case 6: System.out.println("Saliendo del programa..."); break;
-                default: System.out.println("Opción no disponible.");
-            }
-        } while (op != 6);
-    }
-
-    private static void registrarEstudiante() {
-        System.out.print("ID del estudiante: ");
-        int id = teclado.nextInt();
-        teclado.nextLine();
-        System.out.print("Nombre completo: ");
-        String nom = teclado.nextLine();
-
-        listaEstudiantes.add(new Estudiante(id, nom));
-        System.out.println(">> Estudiante registrado correctamente.");
-    }
-
-    private static void crearActividad() {
-        System.out.print("Código de actividad: ");
-        int cod = teclado.nextInt();
-        teclado.nextLine();
-        System.out.print("Nombre de la actividad: ");
-        String nombre = teclado.nextLine();
-        System.out.print("Cupos disponibles: ");
-        String cuposRaw = teclado.nextLine(); 
-        int cupos = Integer.parseInt(cuposRaw);
-        System.out.print("Horas que otorga: ");
-        int hrs = teclado.nextInt();
-        teclado.nextLine();
-
-        listaActividades.add(new Actividad(cod, nombre, cupos, hrs));
-        System.out.println(">> Actividad aperturada.");
-    }
-
-    private static void ejecutarInscripcion() {
-        System.out.print("ID Estudiante: ");
-        int idBuscar = teclado.nextInt();
-        System.out.print("Código Actividad: ");
-        int codBuscar = teclado.nextInt();
-        teclado.nextLine();
-
-        Estudiante alumno = null;
-        for (Estudiante e : listaEstudiantes) {
-            if (e.getId() == idBuscar) { alumno = e; break; }
         }
-
-        Actividad act = null;
-        for (Actividad a : listaActividades) {
-            if (a.getCodigo() == codBuscar) { act = a; break; }
-        }
-
-        if (alumno == null || act == null) {
-            System.out.println("[Error] No se encontró el estudiante o la actividad.");
-            return;
-        }
-
-        // Lógica de inscripción
-        if (act.inscritos.size() < act.getCupos()) {
-            act.inscritos.add(alumno);
-            alumno.modificarHoras(act.getHoras());
-            System.out.println("Inscripción confirmada en " + act.getNombre());
-        } else {
-            act.listaEspera.add(alumno);
-            System.out.println("Cupos llenos. El alumno quedó en lista de espera.");
-        }
-    }
-
-    private static void darDeBaja() {
-        System.out.print("Código de la actividad: ");
-        int cod = teclado.nextInt();
-        System.out.print("ID del estudiante a retirar: ");
-        int idEst = teclado.nextInt();
-        teclado.nextLine();
-
-        Actividad actividad = null;
-        for (Actividad a : listaActividades) {
-            if (a.getCodigo() == cod) { actividad = a; break; }
-        }
-
-        if (actividad == null) {
-            System.out.println("[Error] Actividad no encontrada.");
-            return;
-        }
-
-        Estudiante aEliminar = null;
-        for (Estudiante e : actividad.inscritos) {
-            if (e.getId() == idEst) { aEliminar = e; break; }
-        }
-
-        if (aEliminar != null) {
-            actividad.inscritos.remove(aEliminar);
-            aEliminar.modificarHoras(-2); // Penalización por cancelación
-            System.out.println("Estudiante retirado. Penalización de -2 horas aplicada.");
-
-            // Si hay alguien en espera, sube a inscritos y SI se le suman horas
-            if (!actividad.listaEspera.isEmpty()) {
-                Estudiante elSiguiente = actividad.listaEspera.remove(0);
-                actividad.inscritos.add(elSiguiente);
-                elSiguiente.modificarHoras(actividad.getHoras());
-                System.out.println("El estudiante " + elSiguiente.getNombre() + " ha salido de la lista de espera e ingresó a la actividad.");
-            }
-        } else {
-            System.out.println("El estudiante no estaba inscrito en esa actividad.");
-        }
-    }
-
-    private static void mostrarReportes() {
-        if (listaEstudiantes.isEmpty()) {
-            System.out.println("No hay estudiantes registrados en el sistema.");
-            return;
-        }
-        
-        System.out.println("\n--- REPORTES DE ALUMNOS ---");
-        for (Estudiante est : listaEstudiantes) {
-            String estado = (est.getHoras() >= 30) ? "APTO" : "NO APTO";
-            System.out.printf("Alumno: %-20s | Horas: %-3d | Estado: %s\n", 
-                    est.getNombre(), est.getHoras(), estado);
-        }
+        System.out.println("Programa terminado.");
     }
 }
