@@ -12,11 +12,11 @@ class Actividad {
     int cupos;
     int horas;
     
-    // Arreglos fijos en vez de listas dinámicas
+    // Arreglos fijos
     Estudiante[] inscritos = new Estudiante[50];
     Estudiante[] espera = new Estudiante[50];
     
-    // Contadores manuales para saber cuántos alumnos hay en cada arreglo
+    // Contadores 
     int cantInscritos = 0;
     int cantEspera = 0;
 }
